@@ -1,8 +1,4 @@
-import logging
-
 import azure.functions as func
-
-logging.basicConfig()
 
 bp = func.Blueprint()
 

@@ -17,5 +17,5 @@ bp = func.Blueprint()
 def do_something_blob(blob: func.InputStream):
     # type(blob.read()) is bytes
     df = pd.read_csv(io.BytesIO(blob.read()))
-    logging.info(df.head())
-    logging.info("Processed %s", blob.name)
+    logging.debug(df.head())
+    logging.debug("Processed %s", blob.name)

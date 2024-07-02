@@ -16,6 +16,7 @@ bp = func.Blueprint()
 def delta_table_func(blob: func.InputStream):
     # type(blob.read()) is bytes
     df = pl.read_parquet(io.BytesIO(blob.read()))
+
     df.write_delta(
         "abfss://test/delta_table",
         mode="overwrite",
@@ -24,4 +25,5 @@ def delta_table_func(blob: func.InputStream):
             "account_key": os.environ["AZ_STA_KEY"],
         },
     )
-    print(df)
+
+    logging.info(df.head())
