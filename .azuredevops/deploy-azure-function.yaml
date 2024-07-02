@@ -1,0 +1,56 @@
+trigger: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  serviceConnection: "example-federated-sc"
+
+jobs:
+  - job: deployV2AF
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "3.10"
+          addToPath: true
+          architecture: "x64"
+        displayName: "Use Python $(pythonVersion)"
+
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: "$(serviceConnection)"
+          KeyVaultName: "deployfunc-kvt"
+          SecretsFilter: "*"
+          RunAsPreJob: false
+
+      - script: |
+          python -m pip install --upgrade pip && \
+          pip install --target="v2/.python_packages/lib/site-packages" -r requirements.txt
+        displayName: "Install dependencies"
+
+      - task: ArchiveFiles@2
+        displayName: "Archive files"
+        inputs:
+          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/v2"
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip
+          replaceExistingArchive: true
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip"
+          artifactName: "drop"
+
+      - task: AzureFunctionApp@2
+        inputs:
+          azureSubscription: "$(serviceConnection)"
+          appType: "functionAppLinux"
+          appName: "deployfunctest"
+          package: "$(Pipeline.Workspace)/**/build$(Build.BuildId).zip"
+          appSettings: >
+            -STA_CONN_STRING $(STA-CONN-STRING)
+            -AZ_STA_NAME $(AZ-STA-NAME)
+            -AZ_STA_KEY $(AZ-STA-KEY)
+            -STA_MI_CONN__blobServiceUri $(STA-BLOB-URI)
+            -STA_MI_CONN__queueServiceUri $(STA-QUEUE-URI)

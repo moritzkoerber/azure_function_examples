@@ -7,81 +7,31 @@ variables:
   serviceConnection: "example-federated-sc"
 
 jobs:
-  # - job: deployResources
-  #   displayName: "Deploy the infrastructure"
-  #   steps:
-  #     - task: TerraformInstaller@0
-  #       inputs:
-  #         terraformVersion: "0.14.8"
-
-  #     - task: TerraformTaskV1@0
-  #       inputs:
-  #         provider: "azurerm"
-  #         command: "init"
-  #         workingDirectory: "$(System.DefaultWorkingDirectory)/ops/stack"
-  #         environmentServiceNameAzureRM: "<Your ARM service connection>"
-
-  #     # - task: TerraformTaskV1@0
-  #     #   inputs:
-  #     #     provider: "azurerm"
-  #     #     command: "plan"
-  #     #     workingDirectory: "$(System.DefaultWorkingDirectory)"
-  #     #     environmentServiceNameAzureRM: "<Your ARM service connection>"
-
-  #     - task: TerraformTaskV1@0
-  #       inputs:
-  #         provider: "azurerm"
-  #         command: "apply"
-  #         workingDirectory: "$(System.DefaultWorkingDirectory)"
-  #         environmentServiceNameAzureRM: "<Your ARM service connection>"
-  #         commandOptions: "-auto-approve"
-  - job: deployAF
+  - job: deployInfrastructure
+    displayName: "Deploy the infrastructure"
     steps:
-      - task: UsePythonVersion@0
+      - task: TerraformInstaller@0
         inputs:
-          versionSpec: "3.10"
-          addToPath: true
-          architecture: "x64"
-        displayName: "Use Python $(pythonVersion)"
+          terraformVersion: "0.14.8"
 
-      - task: AzureKeyVault@2
+      - task: TerraformTaskV1@0
         inputs:
-          azureSubscription: "$(serviceConnection)"
-          KeyVaultName: "deployfunc-kvt"
-          SecretsFilter: "*"
-          RunAsPreJob: false
+          provider: "azurerm"
+          command: "init"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops/stack"
+          environmentServiceNameAzureRM: "<Your ARM service connection>"
 
-      ##############
-      # Deploy v2 AF
-      ##############
-      - script: |
-          python -m pip install --upgrade pip && \
-          pip install --target="v2/.python_packages/lib/site-packages" -r requirements.txt
-        displayName: "Install dependencies"
-
-      - task: ArchiveFiles@2
-        displayName: "Archive files"
+      - task: TerraformTaskV1@0
         inputs:
-          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/v2"
-          includeRootFolder: false
-          archiveType: zip
-          archiveFile: $(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip
-          replaceExistingArchive: true
+          provider: "azurerm"
+          command: "plan"
+          workingDirectory: "$(System.DefaultWorkingDirectory)"
+          environmentServiceNameAzureRM: "<Your ARM service connection>"
 
-      - task: PublishBuildArtifacts@1
+      - task: TerraformTaskV1@0
         inputs:
-          PathtoPublish: "$(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip"
-          artifactName: "drop"
-
-      - task: AzureFunctionApp@2
-        inputs:
-          azureSubscription: "$(serviceConnection)"
-          appType: "functionAppLinux"
-          appName: "deployfunctest"
-          package: "$(Pipeline.Workspace)/**/build$(Build.BuildId).zip"
-          appSettings: >
-            -STA_CONN_STRING $(STA-CONN-STRING)
-            -AZ_STA_NAME $(AZ-STA-NAME)
-            -AZ_STA_KEY $(AZ-STA-KEY)
-            -STA_MI_CONN__blobServiceUri $(STA-BLOB-URI)
-            -STA_MI_CONN__queueServiceUri $(STA-QUEUE-URI)
+          provider: "azurerm"
+          command: "apply"
+          workingDirectory: "$(System.DefaultWorkingDirectory)"
+          environmentServiceNameAzureRM: "<Your ARM service connection>"
+          commandOptions: "-auto-approve"
