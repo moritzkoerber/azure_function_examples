@@ -12,26 +12,22 @@ jobs:
     steps:
       - task: TerraformInstaller@0
         inputs:
-          terraformVersion: "0.14.8"
+          terraformVersion: "1.9.1"
 
-      - task: TerraformTaskV1@0
+      - task: TerraformTaskV4@4
+        displayName: "Initialize Terraform"
         inputs:
           provider: "azurerm"
           command: "init"
-          workingDirectory: "$(System.DefaultWorkingDirectory)/ops/stack"
-          environmentServiceNameAzureRM: "<Your ARM service connection>"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
+          backendServiceArm: $(serviceConnection)
 
-      - task: TerraformTaskV1@0
+      - task: TerraformTaskV4@4
+        name: terraformPlan
+        displayName: Create Terraform Plan
         inputs:
           provider: "azurerm"
           command: "plan"
-          workingDirectory: "$(System.DefaultWorkingDirectory)"
-          environmentServiceNameAzureRM: "<Your ARM service connection>"
-
-      - task: TerraformTaskV1@0
-        inputs:
-          provider: "azurerm"
-          command: "apply"
-          workingDirectory: "$(System.DefaultWorkingDirectory)"
-          environmentServiceNameAzureRM: "<Your ARM service connection>"
-          commandOptions: "-auto-approve"
+          commandOptions: "-out main.tfplan"
+          environmentServiceNameAzureRM: "your-environment-service-connection"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
