@@ -7,10 +7,10 @@ import polars as pl
 
 logging.basicConfig()
 
-bp = func.Blueprint()
+write_delta_table_bp = func.Blueprint()
 
 
-@bp.blob_trigger(
+@write_delta_table_bp.blob_trigger(
     arg_name="blob", path="mycontainer/{name}.parquet", connection="STA_CONN_STRING"
 )
 def delta_table_func(blob: func.InputStream):

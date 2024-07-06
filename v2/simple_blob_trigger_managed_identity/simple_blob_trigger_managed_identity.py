@@ -6,10 +6,10 @@ import pandas as pd
 
 logging.basicConfig()
 
-bp = func.Blueprint()
+simple_blob_trigger_mi_bp = func.Blueprint()
 
 
-@bp.blob_trigger(
+@simple_blob_trigger_mi_bp.blob_trigger(
     arg_name="blob",
     path="mycontainer/othersubfolder/{name}.csv",
     connection="STA_MI_CONN",

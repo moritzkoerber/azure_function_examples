@@ -6,27 +6,27 @@ import pandas as pd
 
 logging.basicConfig()
 
-bp = func.Blueprint()
+copy_blobs_bp = func.Blueprint()
 
 
-@bp.blob_trigger(
+@copy_blobs_bp.blob_trigger(
     arg_name="obj",
     path="mycontainer/{name}.csv",  # only copy csv files
     connection="STA_CONN_STRING",  # for local:"StorageConnectionString",
 )
-@bp.blob_input(
+@copy_blobs_bp.blob_input(
     arg_name="inputblob",
     path="mycontainer/{name}.csv",
     connection="STA_CONN_STRING",
     data_type="binary",  # binary, stream, or string
 )
-@bp.blob_input(
+@copy_blobs_bp.blob_input(
     arg_name="inputblobstr",
     path="mycontainer/{name}.csv",
     connection="STA_CONN_STRING",
     data_type="string",
 )
-@bp.blob_output(
+@copy_blobs_bp.blob_output(
     arg_name="outputblob",
     path="myothercontainer/{name}.csv",
     connection="STA_CONN_STRING",
