@@ -10,6 +10,16 @@ jobs:
   - job: deployInfrastructure
     displayName: "Deploy the infrastructure"
     steps:
+      - task: AzureCLI@2
+        displayName: Azure CLI
+        inputs:
+          azureSubscription: $(serviceConnection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az --version
+            az account show
+
       - script: |
           echo "##[group]Install Terraform"
           sudo apt-get install -y gnupg software-properties-common curl
