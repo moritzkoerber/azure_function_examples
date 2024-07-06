@@ -10,32 +10,23 @@ jobs:
   - job: deployInfrastructure
     displayName: "Deploy the infrastructure"
     steps:
-      - task: TerraformInstaller@0
-        inputs:
-          terraformVersion: "1.9.1"
+      - script: |
+          echo "##[group]Install Terraform"
+          sudo apt-get install -y gnupg software-properties-common curl
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+          sudo apt-add-repository "deb https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+          sudo apt-get update && sudo apt-get install terraform
+          echo "##[endgroup]"
+        displayName: "Install Terraform"
 
-      - task: TerraformTaskV3@3
-        displayName: "Initialize Terraform"
-        inputs:
-          provider: "azurerm"
-          command: "init"
-          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
-          environmentServiceNameAzureRM: $(serviceConnection)
-          backendAzureRmResourceGroupName:
+      - script: terraform init
+        displayName: "Terraform Init"
+        workingDirectory: $(System.DefaultWorkingDirectory)/ops
 
-      - task: TerraformTaskV3@3
-        displayName: "Plan"
-        inputs:
-          provider: "azurerm"
-          command: "plan"
-          workingDirectory: "$(System.DefaultWorkingDirectory)"
-          environmentServiceNameAzureRM: $(serviceConnection)
+      - script: terraform plan -out=tfplan
+        displayName: "Terraform Plan"
+        workingDirectory: $(System.DefaultWorkingDirectory)/ops
 
-      - task: TerraformTaskV3@3
-        displayName: "Apply"
-        inputs:
-          provider: "azurerm"
-          command: "apply"
-          workingDirectory: "$(System.DefaultWorkingDirectory)"
-          environmentServiceNameAzureRM: $(serviceConnection)
-          commandOptions: "-auto-approve"
+      - script: terraform apply -input=false -auto-approve tfplan
+        displayName: "Terraform Apply"
+        workingDirectory: $(System.DefaultWorkingDirectory)/ops
