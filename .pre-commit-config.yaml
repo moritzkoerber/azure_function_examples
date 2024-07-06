@@ -11,13 +11,13 @@ repos:
           - --unsafe
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.4.10"
+    rev: "v0.5.1"
     hooks:
       - id: ruff
       - id: ruff-format
 
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.28.5
+    rev: 0.28.6
     hooks:
       - id: check-github-workflows
       - id: check-github-actions
@@ -34,7 +34,7 @@ repos:
       - id: terraform_fmt
 
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: "3.2.141"
+    rev: "3.2.174"
     hooks:
       - id: checkov
         verbose: false
