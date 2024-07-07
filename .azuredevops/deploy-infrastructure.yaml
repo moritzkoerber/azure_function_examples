@@ -11,6 +11,7 @@ jobs:
     displayName: "Deploy the infrastructure"
     steps:
       - task: TerraformInstaller@0
+        displayName: "Install Terraform"
         inputs:
           terraformVersion: "1.9.1"
 
@@ -21,17 +22,26 @@ jobs:
           command: "init"
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
           backendServiceArm: $(serviceConnection)
-          backendAzureRmResourceGroupName: "deploy-rg"
+          backendAzureRmResourceGroupName: "terraform-rg"
           backendAzureRmStorageAccountName: "generaltfstatesta"
-          backendAzureRmContainerName: "tf-state"
+          backendAzureRmContainerName: "af-tf-state"
           backendAzureRmKey: "terraform.tfstate"
 
       - task: TerraformTaskV4@4
         name: terraformPlan
-        displayName: Create Terraform Plan
+        displayName: "Create Terraform Plan"
         inputs:
           provider: "azurerm"
           command: "plan"
           commandOptions: "-out main.tfplan"
           environmentServiceNameAzureRM: $(serviceConnection)
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
+
+      - task: TerraformTaskV3@3
+        displayName: "Apply Terraform Plan"
+        inputs:
+          provider: "azurerm"
+          command: "apply"
+          workingDirectory: "$(System.DefaultWorkingDirectory)"
+          environmentServiceNameAzureRM: $(serviceConnection)
+          commandOptions: "-auto-approve"
