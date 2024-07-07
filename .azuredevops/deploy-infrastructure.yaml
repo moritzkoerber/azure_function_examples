@@ -13,3 +13,21 @@ jobs:
       - task: TerraformInstaller@0
         inputs:
           terraformVersion: "1.9.1"
+
+      - task: TerraformTaskV4@4
+        displayName: "Initialize Terraform"
+        inputs:
+          provider: "azurerm"
+          command: "init"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
+          backendServiceArm: $(serviceConnection)
+
+      - task: TerraformTaskV4@4
+        name: terraformPlan
+        displayName: Create Terraform Plan
+        inputs:
+          provider: "azurerm"
+          command: "plan"
+          commandOptions: "-out main.tfplan"
+          environmentServiceNameAzureRM: "your-environment-service-connection"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
