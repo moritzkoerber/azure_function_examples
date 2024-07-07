@@ -21,6 +21,10 @@ jobs:
           command: "init"
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
           backendServiceArm: $(serviceConnection)
+          backendAzureRmResourceGroupName: "deploy-rg"
+          backendAzureRmStorageAccountName: "generaltfstatesta"
+          backendAzureRmContainerName: "tf-state"
+          backendAzureRmKey: "terraform.tfstate"
 
       - task: TerraformTaskV4@4
         name: terraformPlan
@@ -29,5 +33,5 @@ jobs:
           provider: "azurerm"
           command: "plan"
           commandOptions: "-out main.tfplan"
-          environmentServiceNameAzureRM: "your-environment-service-connection"
+          environmentServiceNameAzureRM: $(serviceConnection)
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
