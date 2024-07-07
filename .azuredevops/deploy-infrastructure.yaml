@@ -10,33 +10,6 @@ jobs:
   - job: deployInfrastructure
     displayName: "Deploy the infrastructure"
     steps:
-      - task: AzureCLI@2
-        displayName: Azure CLI
+      - task: TerraformInstaller@0
         inputs:
-          azureSubscription: $(serviceConnection)
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            az --version
-            az account show
-
-      - script: |
-          echo "##[group]Install Terraform"
-          sudo apt-get install -y gnupg software-properties-common curl
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-          sudo apt-add-repository "deb https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install terraform
-          echo "##[endgroup]"
-        displayName: "Install Terraform"
-
-      - script: terraform init
-        displayName: "Terraform Init"
-        workingDirectory: $(System.DefaultWorkingDirectory)/ops
-
-      - script: terraform plan -out=tfplan
-        displayName: "Terraform Plan"
-        workingDirectory: $(System.DefaultWorkingDirectory)/ops
-
-      - script: terraform apply -input=false -auto-approve tfplan
-        displayName: "Terraform Apply"
-        workingDirectory: $(System.DefaultWorkingDirectory)/ops
+          terraformVersion: "1.9.1"
