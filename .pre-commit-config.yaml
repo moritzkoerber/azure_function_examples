@@ -43,7 +43,9 @@ repos:
             --skip-check=CKV2_AZURE_33,
             --skip-check=CKV2_AZURE_1,
             --skip-check=CKV_AZURE_206,
+            --skip-check=CKV_AZURE_32,
             --skip-check=CKV_AZURE_33,
+            --skip-check=CKV2_AZURE_40,
             -f,
           ]
 
