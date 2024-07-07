@@ -37,11 +37,12 @@ jobs:
           environmentServiceNameAzureRM: $(serviceConnection)
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
 
-      - task: TerraformTaskV3@3
+      - task: TerraformTaskV4@4
         displayName: "Apply Terraform Plan"
+        condition: eq(variables['terraformPlan.changesPresent'], 'true')
         inputs:
           provider: "azurerm"
           command: "apply"
-          workingDirectory: "$(System.DefaultWorkingDirectory)"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
           environmentServiceNameAzureRM: $(serviceConnection)
-          commandOptions: "-auto-approve"
+          commandOptions: "main.tfplan"
