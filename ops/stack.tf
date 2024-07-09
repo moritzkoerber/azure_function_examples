@@ -30,6 +30,11 @@ resource "azurerm_storage_account" "example-sa" {
     }
   }
 }
+
+resource "azurerm_storage_container" "example" {
+  name                 = "mycontainer"
+  storage_account_name = azurerm_storage_account.example-sa.name
+}
 resource "azurerm_storage_account" "af-sa" {
   name                              = "afsa${var.env}${random_id.unique-id.hex}"
   resource_group_name               = azurerm_resource_group.af-rg.name
