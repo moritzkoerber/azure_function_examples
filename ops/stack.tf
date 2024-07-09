@@ -31,7 +31,7 @@ resource "azurerm_storage_account" "af-sa" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "af-kv" {
-  name                            = "afkv${var.env}"
+  name                            = "af-kv-${var.env}"
   location                        = azurerm_resource_group.af-rg.location
   resource_group_name             = azurerm_resource_group.af-rg.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
@@ -45,5 +45,36 @@ resource "azurerm_key_vault" "af-kv" {
   network_acls {
     default_action = "Deny"
     bypass         = "AzureServices"
+  }
+}
+
+resource "azurerm_service_plan" "af-splan" {
+  name                = "af-splan-${var.env}"
+  resource_group_name = azurerm_resource_group.af-rg.name
+  location            = azurerm_resource_group.af-rg.location
+  os_type             = "Linux"
+  sku_name            = "Y1"
+}
+
+resource "azurerm_linux_function_app" "service-plan" {
+  name                = "af-${var.env}"
+  resource_group_name = azurerm_resource_group.af-rg.name
+  location            = azurerm_resource_group.af-rg.location
+
+  storage_account_name          = azurerm_storage_account.af-sa.name
+  storage_account_access_key    = azurerm_storage_account.af-sa.primary_access_key
+  service_plan_id               = azurerm_service_plan.af-splan.id
+  functions_extension_version   = var.function_version
+  public_network_access_enabled = false
+  https_only                    = true
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  site_config {
+    application_stack {
+      python_version = var.python_version
+    }
   }
 }
