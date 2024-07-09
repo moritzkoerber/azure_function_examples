@@ -19,7 +19,7 @@ jobs:
       - task: AzureKeyVault@2
         inputs:
           azureSubscription: "$(serviceConnection)"
-          KeyVaultName: "deployfunc-kvt"
+          KeyVaultName: "af-kv-dev9d"
           SecretsFilter: "*"
           RunAsPreJob: false
 
@@ -46,7 +46,7 @@ jobs:
         inputs:
           azureSubscription: "$(serviceConnection)"
           appType: "functionAppLinux"
-          appName: "deployfunctest"
+          appName: "af-dev9d"
           package: "$(Pipeline.Workspace)/**/build$(Build.BuildId).zip"
           appSettings: >
             -STA_CONN_STRING $(STA-CONN-STRING)
