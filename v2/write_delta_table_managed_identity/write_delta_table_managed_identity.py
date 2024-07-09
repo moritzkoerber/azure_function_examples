@@ -11,14 +11,16 @@ write_delta_table_mi_bp = func.Blueprint()
 
 
 @write_delta_table_mi_bp.blob_trigger(
-    arg_name="blob", path="mycontainer/delta/{name}.parquet", connection="STA_MI_CONN"
+    arg_name="blob",
+    path="mycontainer/delta_mi/{name}.parquet",
+    connection="STA_MI_CONN",
 )
 def delta_table_func_mi(blob: func.InputStream):
     # type(blob.read()) is bytes
     df = pl.read_parquet(io.BytesIO(blob.read()))
 
     df.write_delta(
-        "abfss://test/test_mi/delta_table",
+        "abfss://mycontainer/delta_table_mi",
         mode="overwrite",
         storage_options={
             "account_name": os.environ["AZ_STA_NAME"],
