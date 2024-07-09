@@ -14,7 +14,7 @@ jobs:
           versionSpec: "3.10"
           addToPath: true
           architecture: "x64"
-        displayName: "Use Python $(pythonVersion)"
+        displayName: "Use Python 3.10"
 
       - task: AzureKeyVault@2
         inputs:
