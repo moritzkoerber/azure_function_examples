@@ -1,3 +1,7 @@
+resource "random_id" "unique-id" {
+  byte_length = 1
+}
+
 
 resource "azurerm_resource_group" "af-rg" {
   name     = "af-rg-${var.env}"
@@ -5,7 +9,7 @@ resource "azurerm_resource_group" "af-rg" {
 }
 
 resource "azurerm_storage_account" "af-sa" {
-  name                              = "afsa${var.env}"
+  name                              = "afsa${var.env}${random_id.unique-id.hex}"
   resource_group_name               = azurerm_resource_group.af-rg.name
   location                          = azurerm_resource_group.af-rg.location
   account_tier                      = "Standard"
@@ -14,7 +18,7 @@ resource "azurerm_storage_account" "af-sa" {
   allow_nested_items_to_be_public   = false
   enable_https_traffic_only         = true
   infrastructure_encryption_enabled = true
-  public_network_access_enabled     = false
+  public_network_access_enabled     = true
 
   sas_policy {
     expiration_period = "90.00:00:00"
@@ -31,7 +35,7 @@ resource "azurerm_storage_account" "af-sa" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "af-kv" {
-  name                            = "af-kv-${var.env}"
+  name                            = "af-kv-${var.env}${random_id.unique-id.hex}"
   location                        = azurerm_resource_group.af-rg.location
   resource_group_name             = azurerm_resource_group.af-rg.name
   tenant_id                       = data.azurerm_client_config.current.tenant_id
@@ -49,7 +53,7 @@ resource "azurerm_key_vault" "af-kv" {
 }
 
 resource "azurerm_service_plan" "af-splan" {
-  name                = "af-splan-${var.env}"
+  name                = "af-splan-${var.env}${random_id.unique-id.hex}"
   resource_group_name = azurerm_resource_group.af-rg.name
   location            = azurerm_resource_group.af-rg.location
   os_type             = "Linux"
@@ -57,7 +61,7 @@ resource "azurerm_service_plan" "af-splan" {
 }
 
 resource "azurerm_linux_function_app" "service-plan" {
-  name                = "af-${var.env}"
+  name                = "af-${var.env}${random_id.unique-id.hex}"
   resource_group_name = azurerm_resource_group.af-rg.name
   location            = azurerm_resource_group.af-rg.location
 
