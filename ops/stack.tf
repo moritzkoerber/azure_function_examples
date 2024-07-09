@@ -60,7 +60,7 @@ resource "azurerm_service_plan" "af-splan" {
   sku_name            = "Y1"
 }
 
-resource "azurerm_linux_function_app" "service-plan" {
+resource "azurerm_linux_function_app" "af" {
   name                = "af-${var.env}${random_id.unique-id.hex}"
   resource_group_name = azurerm_resource_group.af-rg.name
   location            = azurerm_resource_group.af-rg.location
@@ -81,4 +81,11 @@ resource "azurerm_linux_function_app" "service-plan" {
       python_version = var.python_version
     }
   }
+}
+
+
+resource "azurerm_role_assignment" "function_storage_access" {
+  scope                = azurerm_storage_account.af-sa.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_linux_function_app.af.identity[0].principal_id
 }
