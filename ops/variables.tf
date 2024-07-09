@@ -8,7 +8,11 @@ variable "region" {
   nullable = false
 }
 
-variable "function-version" {
+variable "function_version" {
+  type     = string
+  nullable = false
+}
+variable "python_version" {
   type     = string
   nullable = false
 }
