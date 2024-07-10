@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "random_id" "unique-id" {
   byte_length = 1
 }
@@ -59,8 +61,6 @@ resource "azurerm_storage_account" "af-sa" {
   }
 }
 
-data "azurerm_client_config" "current" {}
-
 resource "azurerm_key_vault" "af-kv" {
   name                            = "af-kv-${var.env}${random_id.unique-id.hex}"
   location                        = azurerm_resource_group.af-rg.location
@@ -108,6 +108,7 @@ resource "azurerm_linux_function_app" "af" {
     application_stack {
       python_version = var.python_version
     }
+    application_insights_key = azurerm_application_insights.af-appi.instrumentation_key
   }
 }
 
@@ -116,4 +117,11 @@ resource "azurerm_role_assignment" "function_storage_access" {
   scope                = azurerm_storage_account.af-sa.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_linux_function_app.af.identity[0].principal_id
+}
+
+resource "azurerm_application_insights" "af-appi" {
+  name                = "af-appi-${var.env}${random_id.unique-id.hex}"
+  location            = azurerm_resource_group.af-rg.location
+  resource_group_name = azurerm_resource_group.af-rg.name
+  application_type    = "web"
 }
