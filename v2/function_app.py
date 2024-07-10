@@ -1,13 +1,12 @@
 import azure.functions as func
 from copy_blobs.copy_blobs import copy_blobs_bp
 from http_trigger.http_trigger import http_bp
-
-from v2.simple_blob_trigger.simple_blob_trigger import simple_blob_trigger_bp
-from v2.simple_blob_trigger_managed_identity.simple_blob_trigger_managed_identity import (
+from simple_blob_trigger.simple_blob_trigger import simple_blob_trigger_bp
+from simple_blob_trigger_managed_identity.simple_blob_trigger_managed_identity import (
     simple_blob_trigger_mi_bp,
 )
-from v2.write_delta_table.write_delta_table import write_delta_table_bp
-from v2.write_delta_table_managed_identity.write_delta_table_managed_identity import (
+from write_delta_table.write_delta_table import write_delta_table_bp
+from write_delta_table_managed_identity.write_delta_table_managed_identity import (
     write_delta_table_mi_bp,
 )
 
