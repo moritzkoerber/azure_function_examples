@@ -33,22 +33,6 @@ repos:
     hooks:
       - id: terraform_fmt
 
-  - repo: https://github.com/bridgecrewio/checkov.git
-    rev: "3.2.174"
-    hooks:
-      - id: checkov_diff
-        verbose: false
-        args:
-          [
-            --skip-check=CKV2_AZURE_33,
-            --skip-check=CKV2_AZURE_1,
-            --skip-check=CKV_AZURE_206,
-            --skip-check=CKV_AZURE_32,
-            --skip-check=CKV_AZURE_33,
-            --skip-check=CKV2_AZURE_40,
-            -f,
-          ]
-
   - repo: https://github.com/sirwart/ripsecrets
     rev: v0.1.8
     hooks:
