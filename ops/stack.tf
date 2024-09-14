@@ -4,7 +4,6 @@ resource "random_id" "unique-id" {
   byte_length = 1
 }
 
-
 resource "azurerm_resource_group" "af-rg" {
   name     = "af-rg-${var.env}"
   location = var.region
@@ -17,7 +16,7 @@ resource "azurerm_storage_account" "example-sa" {
   account_replication_type          = "LRS"
   min_tls_version                   = "TLS1_2"
   allow_nested_items_to_be_public   = false
-  enable_https_traffic_only         = true
+  https_traffic_only_enabled        = true
   infrastructure_encryption_enabled = true
   public_network_access_enabled     = true
 
@@ -45,7 +44,7 @@ resource "azurerm_storage_account" "af-sa" {
   account_replication_type          = "LRS"
   min_tls_version                   = "TLS1_2"
   allow_nested_items_to_be_public   = false
-  enable_https_traffic_only         = true
+  https_traffic_only_enabled        = true
   infrastructure_encryption_enabled = true
   public_network_access_enabled     = true
 
