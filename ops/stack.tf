@@ -48,7 +48,7 @@ resource "azurerm_key_vault" "af-kv" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = true
   soft_delete_retention_days      = 30
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
   enable_rbac_authorization       = true
   network_acls {
     default_action = "Deny"
