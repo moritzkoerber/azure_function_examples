@@ -3,11 +3,27 @@ trigger: none
 pool:
   vmImage: "ubuntu-latest"
 
+parameters:
+  - name: azureFunctionProgrammingModel
+    displayName: "Azure Function Programming Model"
+    type: string
+    values:
+      - v1
+      - v2
+
 variables:
   serviceConnection: "example-federated-sc"
 
+  ${{ if eq(parameters.azureFunctionProgrammingModel, 'v1') }}:
+    functionAppName: "af-v1-dev9d"
+    functionAppPath: "v1"
+
+  ${{ if eq(parameters.azureFunctionProgrammingModel, 'v2') }}:
+    functionAppName: "af-dev9d"
+    functionAppPath: "v2"
+
 jobs:
-  - job: deployV2AF
+  - job: deployAF
     steps:
       - task: UsePythonVersion@0
         inputs:
@@ -25,13 +41,13 @@ jobs:
 
       - script: |
           python -m pip install --upgrade pip && \
-          pip install --target="v2/.python_packages/lib/site-packages" -r requirements.txt
+          pip install --target="$(functionAppPath)/.python_packages/lib/site-packages" -r requirements.txt
         displayName: "Install dependencies"
 
       - task: ArchiveFiles@2
         displayName: "Archive files"
         inputs:
-          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/v2"
+          rootFolderOrFile: "$(System.DefaultWorkingDirectory)/$(functionAppPath)"
           includeRootFolder: false
           archiveType: zip
           archiveFile: $(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip
@@ -46,7 +62,7 @@ jobs:
         inputs:
           azureSubscription: "$(serviceConnection)"
           appType: "functionAppLinux"
-          appName: "af-dev9d"
+          appName: $(functionAppName)
           package: "$(Pipeline.Workspace)/**/build$(Build.BuildId).zip"
           appSettings: >
             -STA_CONN_STRING $(STA-CONN-STRING)
