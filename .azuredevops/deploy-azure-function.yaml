@@ -32,6 +32,16 @@ jobs:
           architecture: "x64"
         displayName: "Use Python 3.10"
 
+      - task: AzureCLI@2
+        displayName: Add agent ip to key vault firewall
+        inputs:
+          azureSubscription: $(serviceConnection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            agentIP=$(curl -s https://checkip.amazonaws.com)
+            az keyvault network-rule add --name "af-kv-dev9d" --ip-address "$agentIP" --only-show-errors
+
       - task: AzureKeyVault@2
         inputs:
           azureSubscription: "$(serviceConnection)"
@@ -70,3 +80,14 @@ jobs:
             -AZ_STA_KEY $(AZ-STA-KEY)
             -STA_MI_CONN__blobServiceUri $(STA-BLOB-URI)
             -STA_MI_CONN__queueServiceUri $(STA-QUEUE-URI)
+
+      - task: AzureCLI@2
+        displayName: Remove Agent IP From Key Vault
+        condition: always()
+        inputs:
+          azureSubscription: $(serviceConnection)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            agentIP=$(curl -s https://checkip.amazonaws.com)
+            az keyvault network-rule remove --name "af-kv-dev9d" --ip-address "$agentIP" --only-show-errors
