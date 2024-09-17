@@ -1,4 +1,0 @@
-deltalake~=0.18
-pandas~=2.2
-polars~=0.20
-requests~=2.32
