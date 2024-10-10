@@ -1,4 +1,4 @@
-deltalake~=0.18
+deltalake~=0.20
 pandas~=2.2
-polars~=0.20
+polars~=1.9
 requests~=2.32
