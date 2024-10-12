@@ -3,6 +3,15 @@ trigger: none
 pool:
   vmImage: "ubuntu-latest"
 
+parameters:
+  - name: environment
+    type: string
+    default: "dev"
+    values:
+      - "dev"
+      - "stg"
+      - "prd"
+
 variables:
   serviceConnection: "example-federated-sc"
 
@@ -20,29 +29,29 @@ jobs:
         inputs:
           provider: "azurerm"
           command: "init"
-          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
-          backendServiceArm: $(serviceConnection)
-          backendAzureRmResourceGroupName: "terraform-rg"
-          backendAzureRmStorageAccountName: "generaltfstatesta"
           backendAzureRmContainerName: "af-tf-state"
           backendAzureRmKey: "terraform.tfstate"
+          backendAzureRmResourceGroupName: "terraform-rg"
+          backendAzureRmStorageAccountName: "generaltfstatesta"
+          backendServiceArm: $(serviceConnection)
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
 
       - task: TerraformTaskV4@4
         name: terraformPlan
         displayName: "Create Terraform Plan"
         inputs:
-          provider: "azurerm"
           command: "plan"
-          commandOptions: "-out main.tfplan"
+          commandOptions: "-out main.tfplan -var env=${{ parameters.environment }}"
           environmentServiceNameAzureRM: $(serviceConnection)
+          provider: "azurerm"
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
 
       - task: TerraformTaskV4@4
         displayName: "Apply Terraform Plan"
         condition: eq(variables['terraformPlan.changesPresent'], 'true')
         inputs:
-          provider: "azurerm"
           command: "apply"
-          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
+          commandOptions: "main.tfplan -var env=${{ parameters.environment }}"
           environmentServiceNameAzureRM: $(serviceConnection)
-          commandOptions: "main.tfplan"
+          provider: "azurerm"
+          workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
