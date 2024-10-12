@@ -25,12 +25,6 @@ resource "azurerm_storage_account" "example-sa" {
     expiration_action = "Log"
   }
 
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
-  }
-
-
   blob_properties {
     delete_retention_policy {
       days = 7
@@ -97,11 +91,6 @@ resource "azurerm_storage_account" "af-sa" {
     expiration_action = "Log"
   }
 
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
-  }
-
   blob_properties {
     delete_retention_policy {
       days = 7
@@ -158,11 +147,6 @@ resource "azurerm_storage_account" "af-sa-v1" {
   sas_policy {
     expiration_period = "90.00:00:00"
     expiration_action = "Log"
-  }
-
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices"]
   }
 
   blob_properties {
