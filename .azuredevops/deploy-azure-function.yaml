@@ -27,10 +27,10 @@ jobs:
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: "3.10"
+          versionSpec: "3.11"
           addToPath: true
           architecture: "x64"
-        displayName: "Use Python 3.10"
+        displayName: "Use Python 3.11"
 
       - task: AzureCLI@2
         displayName: Add agent ip to key vault firewall

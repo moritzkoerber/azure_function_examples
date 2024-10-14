@@ -13,9 +13,7 @@ def http_trigger_async_execution(req: func.HttpRequest) -> func.HttpResponse:
             f"http://worldtimeapi.org/api/timezone/{tz}"
         ) as response:
             data = await response.json()
-            print(
-                f"In timezone {tz} it is currently {data['datetime'].strftime('%H:%M')}"
-            )
+            print(f"In timezone {tz} it is currently {data['datetime']}")
 
     async def main():
         timezones = ["Europe/Berlin", "America/New_York", "Asia/Tokyo"]
