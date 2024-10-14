@@ -18,5 +18,5 @@ select = [
 
 ignore = ["E501"]
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 suppress-none-returning = true
