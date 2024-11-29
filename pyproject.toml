@@ -5,14 +5,14 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = [
-    "E", # pycodestyle
-    "F", # Pyflakes
-    "W", # pycodestyle
-    "I", # isort
-    "N", # pep8-naming
+    "E",   # pycodestyle
+    "F",   # Pyflakes
+    "W",   # pycodestyle
+    "I",   # isort
+    "N",   # pep8-naming
     "ANN", # function annotations
-    "B", # bugbear
-    "A", # built-ins
+    "B",   # bugbear
+    "A",   # built-ins
     "DTZ", # flake8-datetimez
 ]
 
@@ -20,3 +20,23 @@ ignore = ["E501"]
 
 [tool.ruff.lint.flake8-annotations]
 suppress-none-returning = true
+
+[tool.poetry]
+name = "azure-function-examples"
+version = "0.1.0"
+description = ""
+license = "MIT"
+authors = ["Moritz Körber"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+deltalake = "~0.22"
+aiohttp = "^3.11.8"
+requests = "^2.32.3"
+polars = "^1.16.0"
+pandas = "^2.2.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

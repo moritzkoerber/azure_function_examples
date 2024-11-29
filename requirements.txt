@@ -1,5 +1,0 @@
-deltalake~=0.20
-pandas~=2.2
-polars~=1.9
-requests~=2.32
-aiohttp~=3.10
