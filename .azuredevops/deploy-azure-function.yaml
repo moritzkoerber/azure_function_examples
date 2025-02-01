@@ -19,7 +19,7 @@ variables:
     functionAppPath: "v1"
 
   ${{ if eq(parameters.azureFunctionProgrammingModel, 'v2') }}:
-    functionAppName: "af-dev9d"
+    functionAppName: "af-v2-dev9d"
     functionAppPath: "v2"
 
 jobs:
