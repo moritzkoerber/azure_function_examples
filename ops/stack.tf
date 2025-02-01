@@ -187,3 +187,22 @@ resource "azurerm_role_assignment" "function_storage_access" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_linux_function_app.af-v2.identity[0].principal_id
 }
+
+############################################
+# Permission management
+############################################
+resource "azurerm_role_assignment" "function_roles" {
+  for_each = {
+    for pair in setproduct(
+      [azurerm_linux_function_app.af-v1, azurerm_linux_function_app.af-v2],
+      ["Storage Queue Data Contributor", "Storage Blob Data Contributor"]
+      ) : "${pair[0].name}-${pair[1]}" => {
+      function = pair[0]
+      role     = pair[1]
+    }
+  }
+
+  scope                = azurerm_storage_account.main-sa.id
+  role_definition_name = each.value.role
+  principal_id         = each.value.function.identity[0].principal_id
+}
