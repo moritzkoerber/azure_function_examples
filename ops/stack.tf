@@ -19,6 +19,7 @@ resource "azurerm_storage_account" "main-sa" {
   https_traffic_only_enabled        = true
   infrastructure_encryption_enabled = true
   public_network_access_enabled     = true
+  is_hns_enabled                    = true
 
   sas_policy {
     expiration_period = "90.00:00:00"
