@@ -8,8 +8,8 @@ resource "azurerm_resource_group" "af-rg" {
   name     = "af-rg-${var.env}"
   location = var.region
 }
-resource "azurerm_storage_account" "example-sa" {
-  name                              = "examplesa${var.env}${random_id.unique-id.hex}"
+resource "azurerm_storage_account" "main-sa" {
+  name                              = "mainsa${var.env}${random_id.unique-id.hex}"
   resource_group_name               = azurerm_resource_group.af-rg.name
   location                          = azurerm_resource_group.af-rg.location
   account_tier                      = "Standard"
@@ -32,9 +32,9 @@ resource "azurerm_storage_account" "example-sa" {
   }
 }
 
-resource "azurerm_storage_container" "example" {
-  name                 = "mycontainer"
-  storage_account_name = azurerm_storage_account.example-sa.name
+resource "azurerm_storage_container" "main-container" {
+  name               = "mycontainer"
+  storage_account_id = azurerm_storage_account.main-sa.id
 }
 
 resource "azurerm_key_vault" "af-kv" {

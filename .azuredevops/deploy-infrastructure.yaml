@@ -22,7 +22,7 @@ jobs:
       - task: TerraformInstaller@0
         displayName: "Install Terraform"
         inputs:
-          terraformVersion: "1.9.1"
+          terraformVersion: "1.10.5"
 
       - task: TerraformTaskV4@4
         displayName: "Initialize Terraform"
@@ -51,7 +51,7 @@ jobs:
         condition: eq(variables['terraformPlan.changesPresent'], 'true')
         inputs:
           command: "apply"
-          commandOptions: "main.tfplan -var env=${{ parameters.environment }}"
+          commandOptions: "main.tfplan"
           environmentServiceNameAzureRM: $(serviceConnection)
           provider: "azurerm"
           workingDirectory: "$(System.DefaultWorkingDirectory)/ops"
