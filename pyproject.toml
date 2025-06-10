@@ -33,7 +33,7 @@ readme = "README.md"
 python = "~3.12"
 deltalake = "~0.24"
 aiohttp = "^3.11.8"
-requests = "^2.32.3"
+requests = "^2.32.4"
 polars = "^1.16.0"
 pandas = "^2.2.3"
 
