@@ -32,7 +32,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "~3.12"
 deltalake = "~0.24"
-aiohttp = "^3.11.8"
+aiohttp = "^3.12.14"
 requests = "^2.32.3"
 polars = "^1.16.0"
 pandas = "^2.2.3"
